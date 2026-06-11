@@ -4,9 +4,8 @@ resource "aws_key_pair" "mykey" {
 }
 
 
-resource "aws_default_vpc" "default" {
+resource "aws_default_vpc" "default" {}
 
-}
 
 
 resource "aws_security_group" "sg" {
@@ -50,9 +49,15 @@ resource "aws_security_group" "sg" {
 
 
 resource "aws_instance" "myEC2" {
+
+  for_each = tomap({
+    ec2_1 = "t3.micro"
+    ec2_2 = "t3.small"
+  })
+
   key_name        = aws_key_pair.mykey.key_name
   security_groups = [aws_security_group.sg.name]
-  instance_type   = var.ec2_instance_type
+  instance_type   = each.value
   ami             = var.ami_id
   root_block_device {
     volume_size           = var.ec2_volume_size
@@ -60,7 +65,7 @@ resource "aws_instance" "myEC2" {
     delete_on_termination = true
   }
   tags = {
-    Name = "devops-ec2"
+    Name = each.key
   }
 
   user_data = <<-EOF
@@ -69,8 +74,6 @@ resource "aws_instance" "myEC2" {
       yum install -y httpd
       systemctl start httpd
       systemctl enable httpd
-      echo "<h1>Hello World from Terraform</h1>" > /var/www/html/index.html
+      echo "<h1>Hello World from Terraform for ${each.key}</h1>" > /var/www/html/index.html
       EOF
-
-
 }
