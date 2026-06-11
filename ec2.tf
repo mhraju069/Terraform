@@ -60,7 +60,7 @@ resource "aws_instance" "myEC2" {
   instance_type   = each.value
   ami             = var.ami_id
   root_block_device {
-    volume_size           = var.ec2_volume_size
+    volume_size           = var.deployment_type == "dev" ? var.ec2_volume_size : 15
     volume_type           = var.ec2_volume_type
     delete_on_termination = true
   }
