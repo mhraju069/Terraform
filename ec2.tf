@@ -1,6 +1,6 @@
 resource "aws_key_pair" "mykey" {
-  key_name   = "mykey"
-  public_key = file("mykey.pub")
+  key_name   = var.key_name
+  public_key = file("${var.key_name}.pub")
 }
 
 
@@ -10,11 +10,11 @@ resource "aws_default_vpc" "default" {
 
 
 resource "aws_security_group" "sg" {
-  name        = "devops-sg"
+  name        = var.security_group_name
   description = "Allow SSH and HTTP access"
   vpc_id      = aws_default_vpc.default.id
   tags = {
-    Name = "devops-sg"
+    Name = var.security_group_name
   }
 
   #inbound rules
@@ -52,11 +52,11 @@ resource "aws_security_group" "sg" {
 resource "aws_instance" "myEC2" {
   key_name        = aws_key_pair.mykey.key_name
   security_groups = [aws_security_group.sg.name]
-  instance_type   = "t3.micro"
-  ami             = "ami-0c02cf818fceb9254" #amazon linux
+  instance_type   = var.ec2_instance_type
+  ami             = var.ami_id
   root_block_device {
-    volume_size           = 8
-    volume_type           = "gp3"
+    volume_size           = var.ec2_volume_size
+    volume_type           = var.ec2_volume_type
     delete_on_termination = true
   }
   tags = {
