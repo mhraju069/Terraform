@@ -1,5 +1,5 @@
 resource "aws_key_pair" "mykey" {
-  key_name   = var.key_name
+  key_name   = "${var.key_name}-${var.deployment_type}"
   public_key = file("../${var.key_name}.pub")
 }
 
@@ -9,11 +9,11 @@ resource "aws_default_vpc" "default" {}
 
 
 resource "aws_security_group" "sg" {
-  name        = var.security_group_name
+  name        = "${var.security_group_name}-${var.deployment_type}"
   description = "Allow SSH and HTTP access"
   vpc_id      = aws_default_vpc.default.id
   tags = {
-    Name = var.security_group_name
+    Name = "${var.security_group_name}-${var.deployment_type}"
   }
 
   #inbound rules
@@ -52,7 +52,6 @@ resource "aws_instance" "myEC2" {
 
   for_each = tomap({
     ec2_1 = "t3.micro"
-    ec2_2 = "t3.small"
   })
 
   key_name        = aws_key_pair.mykey.key_name
@@ -65,7 +64,8 @@ resource "aws_instance" "myEC2" {
     delete_on_termination = true
   }
   tags = {
-    Name = each.key
+    Name = "${each.key}-${var.deployment_type}"
+    env  = var.deployment_type
   }
 
   user_data = <<-EOF
