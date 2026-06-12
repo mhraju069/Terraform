@@ -79,7 +79,7 @@ resource "aws_instance" "myEC2" {
 }
 
 
-resource "aws_instance" "imported_ec2" {
-  ami           = "unknown"
-  instance_type = "unknown"
-}
+# resource "aws_instance" "imported_ec2" {
+#   ami           = "unknown"
+#   instance_type = "unknown"
+# }
