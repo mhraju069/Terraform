@@ -30,5 +30,5 @@ variable "security_group_name" {
 
 variable "deployment_type" {
   type    = string
-  default = "dev"
+  default = "prod"
 }
