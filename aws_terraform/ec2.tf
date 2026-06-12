@@ -1,6 +1,6 @@
 resource "aws_key_pair" "mykey" {
   key_name   = var.key_name
-  public_key = file("${var.key_name}.pub")
+  public_key = file("../${var.key_name}.pub")
 }
 
 
