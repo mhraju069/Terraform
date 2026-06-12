@@ -77,3 +77,9 @@ resource "aws_instance" "myEC2" {
       echo "<h1>Hello World from Terraform for ${each.key}</h1>" > /var/www/html/index.html
       EOF
 }
+
+
+resource "aws_instance" "imported_ec2" {
+  ami           = "unknown"
+  instance_type = "unknown"
+}
